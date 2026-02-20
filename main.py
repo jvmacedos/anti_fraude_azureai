@@ -4,14 +4,12 @@ from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from msrest.authentication import CognitiveServicesCredentials
 import os
 
-# Configurações de API
 form_recognizer_endpoint = "https://<seu-form-recognizer-endpoint>.cognitiveservices.azure.com/"
 form_recognizer_key = "<sua-chave-do-form-recognizer>"
 
 computer_vision_endpoint = "https://<seu-computer-vision-endpoint>.cognitiveservices.azure.com/"
 computer_vision_key = "<sua-chave-do-computer-vision>"
 
-# Inicialização dos clientes
 form_recognizer_client = DocumentAnalysisClient(
     endpoint=form_recognizer_endpoint,
     credential=AzureKeyCredential(form_recognizer_key)
@@ -22,7 +20,6 @@ computer_vision_client = ComputerVisionClient(
     credentials=CognitiveServicesCredentials(computer_vision_key)
 )
 
-# Função para analisar documentos com Form Recognizer
 def analyze_document(file_path):
     with open(file_path, "rb") as document:
         poller = form_recognizer_client.begin_analyze_document("prebuilt-document", document)
@@ -33,7 +30,6 @@ def analyze_document(file_path):
         if kv_pair.key and kv_pair.value:
             print(f"{kv_pair.key.content}: {kv_pair.value.content}")
 
-# Função para detectar anomalias visuais no documento com Computer Vision
 def analyze_image(file_path):
     with open(file_path, "rb") as image:
         analysis = computer_vision_client.analyze_image_in_stream(
@@ -46,13 +42,12 @@ def analyze_image(file_path):
     if analysis.description.captions:
         print(f"Descrição: {analysis.description.captions[0].text}")
 
-# Caminho do arquivo para análise
 document_path = "exemplo_documento.pdf"
 image_path = "exemplo_imagem.png"
 
-# Chamada das funções
 if os.path.exists(document_path):
     analyze_document(document_path)
 
 if os.path.exists(image_path):
     analyze_image(image_path)
+
